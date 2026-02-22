@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: shinde_mala_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: shinde_mala_erp
+      MYSQL_ROOT_PASSWORD: ShindeMala@2026Secure
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pShindeMala@2026Secure"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shinde_mala_backend
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: ShindeMala@2026Secure
+      DB_NAME: shinde_mala_erp
+      JWT_SECRET: shinde_mala_jwt_secret_2026_production
+      PORT: 5001
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - uploads_data:/app/public/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    container_name: shinde_mala_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+  uploads_data:
