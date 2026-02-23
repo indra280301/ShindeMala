@@ -8,6 +8,7 @@ services:
     environment:
       MYSQL_DATABASE: shinde_mala_erp
       MYSQL_ROOT_PASSWORD: ShindeMala@2026Secure
+      TZ: Asia/Kolkata
     ports:
       - "3306:3306"
     volumes:
@@ -35,6 +36,7 @@ services:
       DB_NAME: shinde_mala_erp
       JWT_SECRET: shinde_mala_jwt_secret_2026_production
       PORT: 5001
+      TZ: Asia/Kolkata
     depends_on:
       db:
         condition: service_healthy
