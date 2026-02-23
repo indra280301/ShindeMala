@@ -81,7 +81,7 @@ const KDS = ({ isBar = false }) => {
         pending: { name: 'Orders Received', items: tickets.filter(t => t.status === 'pending') },
         processing: { name: 'In Progress', items: tickets.filter(t => t.status === 'processing') },
         ready: { name: 'Ready To Serve', items: tickets.filter(t => t.status === 'ready') },
-        cancelled: { name: 'Cancelled', items: tickets.filter(t => t.status === 'cancelled') },
+        cancelled: { name: 'Cancelled', items: tickets.filter(t => t.status === 'cancelled').reverse() },
     };
 
     const getStatusColor = (status) => {

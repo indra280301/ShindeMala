@@ -175,12 +175,13 @@ const POS = () => {
                 await api.put(`/orders/${activeOrder.order_id}/status`, { status: 'cancelled' });
                 if (selectedTable) {
                     await api.put(`/tables/${selectedTable.table_id}/status`, { status: 'available' });
-                    await api.post('/orders/cancel', {
-                        table_number: selectedTable.table_number,
-                        items: activeOrder.items,
-                        total_amount: activeOrder.grand_total
-                    });
                 }
+                // Log cancellation for BOTH dine-in and takeaway
+                await api.post('/orders/cancel', {
+                    table_number: selectedTable ? selectedTable.table_number : 'Takeaway',
+                    items: activeOrder.items,
+                    total_amount: activeOrder.grand_total
+                });
             } catch (err) {
                 console.error("Failed to cancel order", err);
             }

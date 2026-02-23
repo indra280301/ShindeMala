@@ -92,7 +92,9 @@ export const getDashboardMetrics = async (req, res) => {
 
         const formattedGraphMap = {};
         graphData.forEach(d => {
-            formattedGraphMap[d.date.toISOString().split('T')[0]] = {
+            // Use local date string to avoid IST->UTC shift
+            const dateKey = typeof d.date === 'string' ? d.date : `${d.date.getFullYear()}-${String(d.date.getMonth() + 1).padStart(2, '0')}-${String(d.date.getDate()).padStart(2, '0')}`;
+            formattedGraphMap[dateKey] = {
                 earnings: parseFloat(d.earnings),
                 orders: d.orders
             };
@@ -103,7 +105,8 @@ export const getDashboardMetrics = async (req, res) => {
         for (let i = 6; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
-            const dateStr = d.toISOString().split('T')[0];
+            // Use local date format to match IST dates from MySQL
+            const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
             if (i === 0) {
                 // Force today's node to be the exact computed `todaysSales` which accounts for live transactions bridging the 10 AM boundary
