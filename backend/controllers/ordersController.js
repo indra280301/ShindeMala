@@ -35,7 +35,7 @@ export const createOrder = async (req, res) => {
             const [existingOrders] = await connection.query(
                 `SELECT order_id FROM orders 
                  WHERE branch_id = ? AND table_id IS NULL AND order_type = 'takeaway' 
-                   AND order_status NOT IN ('completed', 'cancelled')
+                   AND order_status NOT IN ('completed', 'cancelled', 'processing')
                  ORDER BY created_at DESC LIMIT 1`,
                 [branch_id]
             );
@@ -113,7 +113,7 @@ export const getActiveTakeawayOrder = async (req, res) => {
 
         const [orders] = await db.query(
             `SELECT * FROM orders 
-             WHERE branch_id = ? AND table_id IS NULL AND order_type = 'takeaway' AND order_status NOT IN ('completed', 'cancelled')
+             WHERE branch_id = ? AND table_id IS NULL AND order_type = 'takeaway' AND order_status NOT IN ('completed', 'cancelled', 'processing')
              ORDER BY created_at DESC LIMIT 1`,
             [branch_id]
         );
