@@ -313,8 +313,9 @@ const POS = () => {
             // Fetch final order data for receipt
             const finalRes = await api.get(`/orders/${activeOrder.order_id}`);
 
-            // SETTLE FIRST — always complete the order even if print fails
-            await api.put(`/orders/${activeOrder.order_id}/status`, { status: 'completed' });
+            // SETTLE — Takeaway goes to 'processing' (awaiting delivery), Dine-in goes to 'completed'
+            const settleStatus = selectedTable ? 'completed' : 'processing';
+            await api.put(`/orders/${activeOrder.order_id}/status`, { status: settleStatus });
             if (selectedTable) {
                 await api.put(`/tables/${selectedTable.table_id}/status`, { status: 'available' });
             }
